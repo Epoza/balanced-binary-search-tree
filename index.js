@@ -54,6 +54,56 @@ const sort = (arr) => {
     return arr;
 };
 
+// Insert function to add a new value to the BST
+const insertItem = (root, value) => {
+    if (root === null) {
+        return Node(value);
+    }
+
+    if (value < root.data) {
+        root.left = insertItem(root.left, value);
+    } else if (value > root.data) {
+        root.right = insertItem(root.right, value);
+    }
+    return root;
+};
+
+const deleteItem = (root, value) => {
+    // Base case: If the tree is empty
+    if (root === null) {
+        return root;
+    }
+    
+    // check if value is in the tree
+    if (value < root.data){
+        root.left = deleteItem(root.left, value);
+    } else if (value > root.data){
+        root.right = deleteItem(root.right, value);
+    } else {
+        // node with one or no child
+        if (root.left === null){
+            return root.right;
+        } else if (root.right === null){
+            return root.left;
+        }
+
+        // node with two children, get the smallest value on right subtree
+        root.data = minValue(root.right);
+        root.right = deleteItem(root.right, root.data);
+    }
+    return root
+}
+
+// Helper function to find the smallest value in a subtree
+const minValue = (node) => {
+    let current = node;
+    // Loop down to find the leftmost leaf
+    while (current.left !== null) {
+        current = current.left;
+    }
+    return current.data;
+};
+
 const prettyPrint = (node, prefix = "", isLeft = true) => {
     if (node === null) {
       return;
@@ -67,7 +117,13 @@ const prettyPrint = (node, prefix = "", isLeft = true) => {
     }
 };
 
-
+// Example
 let array = [1, 7, 4, 23, 8, 9, 4, 3, 5, 7, 9, 67, 6345, 324];
 let tree = buildTree(array);
+tree = insertItem(tree, 6);
+tree = deleteItem(tree, 7);
+tree = insertItem(tree, 10);
+tree = deleteItem(tree, 67);
+tree = insertItem(tree, 67);
+tree = deleteItem(tree, 1038);
 prettyPrint(tree);
